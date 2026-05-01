@@ -8,6 +8,14 @@ QueuePilot is a web application that helps small businesses quickly identify and
 ![Built with IBM Bob](https://img.shields.io/badge/Built%20with-IBM%20Bob-blue)
 ![watsonx.ai Ready](https://img.shields.io/badge/watsonx.ai-Integration%20Ready-purple)
 
+## 🌐 Live Demo
+
+**Try it now:** [https://queuepilot-teal.vercel.app](https://queuepilot-teal.vercel.app)
+
+**Quick Demo:** Click "⚡ Judge Demo Mode" for an instant impressive demonstration!
+
+**API Endpoint:** [https://queuepilot-backend.vercel.app](https://queuepilot-backend.vercel.app)
+
 ## 🎯 Problem Statement
 
 Small businesses receive dozens of customer support messages daily across multiple channels. Without proper triage, teams struggle to:
