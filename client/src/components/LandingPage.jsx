@@ -5,10 +5,20 @@
 
 import React from 'react';
 
-const LandingPage = ({ onStartDemo, onConnectedInbox }) => {
+const LandingPage = ({ onStartDemo, onConnectedInbox, onJudgeDemo }) => {
   return (
     <div style={styles.container}>
       <div style={styles.content}>
+        {/* Status Badge */}
+        <div style={styles.statusBadge}>
+          <span style={styles.statusDot}></span>
+          <span style={styles.statusText}>Fallback AI Active</span>
+          <span style={styles.statusSeparator}>•</span>
+          <span style={styles.statusText}>watsonx-ready</span>
+          <span style={styles.statusSeparator}>•</span>
+          <span style={styles.statusText}>Demo Data Only</span>
+        </div>
+
         <div style={styles.header}>
           <div style={styles.iconContainer}>
             <svg style={styles.icon} viewBox="0 0 24 24" fill="none" stroke="currentColor">
@@ -54,6 +64,9 @@ const LandingPage = ({ onStartDemo, onConnectedInbox }) => {
         </div>
 
         <div style={styles.buttonContainer}>
+          <button style={styles.judgeDemoButton} onClick={onJudgeDemo}>
+            ⚡ Judge Demo Mode
+          </button>
           <button style={styles.demoButton} onClick={onStartDemo}>
             Try Demo
           </button>
@@ -151,11 +164,55 @@ const styles = {
     lineHeight: '1.6',
     margin: 0
   },
+  statusBadge: {
+    position: 'absolute',
+    top: '20px',
+    right: '20px',
+    background: 'rgba(255, 255, 255, 0.95)',
+    padding: '10px 20px',
+    borderRadius: '25px',
+    display: 'flex',
+    alignItems: 'center',
+    gap: '8px',
+    boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+    fontSize: '12px',
+    fontWeight: '600'
+  },
+  statusDot: {
+    width: '8px',
+    height: '8px',
+    borderRadius: '50%',
+    background: '#10b981',
+    animation: 'pulse 2s infinite'
+  },
+  statusText: {
+    color: '#4a5568',
+    fontSize: '12px'
+  },
+  statusSeparator: {
+    color: '#cbd5e0',
+    fontSize: '12px'
+  },
   buttonContainer: {
     display: 'flex',
     gap: '20px',
     justifyContent: 'center',
     flexWrap: 'wrap'
+  },
+  judgeDemoButton: {
+    background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
+    color: 'white',
+    border: 'none',
+    padding: '18px 50px',
+    fontSize: '18px',
+    fontWeight: '700',
+    borderRadius: '50px',
+    cursor: 'pointer',
+    boxShadow: '0 10px 30px rgba(245, 158, 11, 0.4)',
+    transition: 'all 0.3s ease',
+    textTransform: 'uppercase',
+    letterSpacing: '1px',
+    animation: 'glow 2s infinite'
   },
   demoButton: {
     background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',

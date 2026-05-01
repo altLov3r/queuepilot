@@ -8,7 +8,7 @@ import TicketCard from './TicketCard';
 import SummaryPanel from './SummaryPanel';
 import { exportAsJSON, exportAsCSV } from '../utils/exportUtils';
 
-const Dashboard = ({ analysisResult, onBack, onNewAnalysis }) => {
+const Dashboard = ({ analysisResult, onBack, onNewAnalysis, onReset }) => {
   // Defensive defaults for analysisResult
   const safeResult = {
     tickets: analysisResult?.tickets || [],
@@ -151,17 +151,33 @@ const Dashboard = ({ analysisResult, onBack, onNewAnalysis }) => {
               <button style={styles.backButton} onClick={onBack}>
                 ← Back to Home
               </button>
-              <button style={styles.newButton} onClick={onNewAnalysis}>
-                New Analysis
-              </button>
+              <div style={styles.headerButtons}>
+                <button style={styles.newButton} onClick={onNewAnalysis}>
+                  New Analysis
+                </button>
+                {onReset && (
+                  <button style={styles.resetButton} onClick={onReset}>
+                    🔄 Reset Demo
+                  </button>
+                )}
+              </div>
             </div>
             <h1 style={styles.title}>Analysis Results</h1>
           </div>
           <div style={styles.emptyState}>
-            <p style={styles.emptyStateText}>No tickets to display. Please analyze some tickets first.</p>
-            <button style={styles.newButton} onClick={onNewAnalysis}>
-              Analyze Tickets
-            </button>
+            <div style={styles.emptyStateIcon}>📊</div>
+            <h2 style={styles.emptyStateTitle}>No Tickets Analyzed Yet</h2>
+            <p style={styles.emptyStateText}>
+              Load a demo scenario or import tickets from Connected Inbox to begin analyzing support messages.
+            </p>
+            <div style={styles.emptyStateButtons}>
+              <button style={styles.emptyStateButton} onClick={onNewAnalysis}>
+                Analyze Tickets
+              </button>
+              <button style={styles.emptyStateButtonSecondary} onClick={onBack}>
+                Back to Home
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -176,9 +192,16 @@ const Dashboard = ({ analysisResult, onBack, onNewAnalysis }) => {
             <button style={styles.backButton} onClick={onBack}>
               ← Back to Home
             </button>
-            <button style={styles.newButton} onClick={onNewAnalysis}>
-              New Analysis
-            </button>
+            <div style={styles.headerButtons}>
+              <button style={styles.newButton} onClick={onNewAnalysis}>
+                New Analysis
+              </button>
+              {onReset && (
+                <button style={styles.resetButton} onClick={onReset}>
+                  🔄 Reset Demo
+                </button>
+              )}
+            </div>
           </div>
           <h1 style={styles.title}>Analysis Results</h1>
           <p style={styles.subtitle}>
@@ -412,7 +435,12 @@ const styles = {
   headerTop: {
     display: 'flex',
     justifyContent: 'space-between',
+    alignItems: 'center',
     marginBottom: '20px'
+  },
+  headerButtons: {
+    display: 'flex',
+    gap: '10px'
   },
   backButton: {
     background: 'transparent',
@@ -455,10 +483,50 @@ const styles = {
     textAlign: 'center',
     boxShadow: '0 2px 8px rgba(0,0,0,0.05)'
   },
-  emptyStateText: {
-    fontSize: '18px',
-    color: '#718096',
+  emptyStateIcon: {
+    fontSize: '64px',
     marginBottom: '20px'
+  },
+  emptyStateTitle: {
+    fontSize: '24px',
+    fontWeight: '700',
+    color: '#1a202c',
+    margin: '0 0 12px 0'
+  },
+  emptyStateText: {
+    fontSize: '16px',
+    color: '#718096',
+    marginBottom: '30px',
+    lineHeight: '1.6'
+  },
+  emptyStateButtons: {
+    display: 'flex',
+    gap: '15px',
+    justifyContent: 'center',
+    flexWrap: 'wrap'
+  },
+  emptyStateButton: {
+    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+    color: 'white',
+    border: 'none',
+    padding: '14px 32px',
+    fontSize: '16px',
+    fontWeight: '600',
+    borderRadius: '50px',
+    cursor: 'pointer',
+    boxShadow: '0 4px 15px rgba(102, 126, 234, 0.4)',
+    transition: 'all 0.3s ease'
+  },
+  emptyStateButtonSecondary: {
+    background: 'white',
+    color: '#667eea',
+    border: '2px solid #667eea',
+    padding: '14px 32px',
+    fontSize: '16px',
+    fontWeight: '600',
+    borderRadius: '50px',
+    cursor: 'pointer',
+    transition: 'all 0.3s ease'
   },
   actions: {
     background: 'white',

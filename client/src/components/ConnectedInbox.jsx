@@ -5,7 +5,10 @@
 
 import { useState, useEffect } from 'react';
 
-function ConnectedInbox({ onImportComplete }) {
+// API URL from environment variable
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+
+function ConnectedInbox({ onImportComplete, onBack, onReset }) {
   const [sources, setSources] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -19,7 +22,7 @@ function ConnectedInbox({ onImportComplete }) {
 
   const fetchSources = async () => {
     try {
-      const response = await fetch('http://localhost:3001/api/import/sources');
+      const response = await fetch(`${API_URL}/api/import/sources`);
       const data = await response.json();
       setSources(data);
     } catch (err) {
@@ -34,7 +37,7 @@ function ConnectedInbox({ onImportComplete }) {
     setSelectedSource(sourceId);
 
     try {
-      const response = await fetch('http://localhost:3001/api/import/demo', {
+      const response = await fetch(`${API_URL}/api/import/demo`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ sourceId })
@@ -77,9 +80,23 @@ function ConnectedInbox({ onImportComplete }) {
   return (
     <div style={styles.container}>
       <div style={styles.header}>
+        <div style={styles.headerButtons}>
+          {onBack && (
+            <button style={styles.backButton} onClick={onBack}>
+              ← Back to Home
+            </button>
+          )}
+          {onReset && (
+            <button style={styles.resetButton} onClick={onReset}>
+              🔄 Reset Demo
+            </button>
+          )}
+        </div>
         <h1 style={styles.title}>🔗 Connected Inbox</h1>
         <p style={styles.subtitle}>
-          Import support tickets from external sources using webhook API or demo connectors
+          {importedTickets.length > 0
+            ? `${importedTickets.length} tickets imported and ready to analyze`
+            : 'Import support tickets from external sources using webhook API or demo connectors'}
         </p>
       </div>
 

@@ -5,7 +5,10 @@
 
 import React, { useState, useEffect } from 'react';
 
-const TicketInput = ({ onAnalyze, onBack }) => {
+// API URL from environment variable
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+
+const TicketInput = ({ onAnalyze, onBack, onReset }) => {
   const [ticketText, setTicketText] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -20,7 +23,7 @@ const TicketInput = ({ onAnalyze, onBack }) => {
 
   const loadScenarios = async () => {
     try {
-      const response = await fetch('/api/demo-scenarios');
+      const response = await fetch(`${API_URL}/api/demo-scenarios`);
       if (!response.ok) throw new Error('Failed to load scenarios');
       
       const data = await response.json();
@@ -45,7 +48,7 @@ const TicketInput = ({ onAnalyze, onBack }) => {
     setError('');
     
     try {
-      const url = `/api/demo-tickets/${selectedScenario}`;
+      const url = `${API_URL}/api/demo-tickets/${selectedScenario}`;
       const response = await fetch(url);
       if (!response.ok) throw new Error('Failed to load demo tickets');
       
@@ -56,7 +59,7 @@ const TicketInput = ({ onAnalyze, onBack }) => {
       
       setTicketText(demoText);
     } catch (err) {
-      setError('Failed to load demo tickets. Please try again.');
+      setError('Failed to load demo tickets. Please check if the backend is running.');
       console.error(err);
     } finally {
       setLoading(false);
@@ -83,12 +86,12 @@ const TicketInput = ({ onAnalyze, onBack }) => {
       }
 
       // Call API to analyze with scenario ID
-      const response = await fetch('/api/analyze', {
+      const response = await fetch(`${API_URL}/api/analyze`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ 
+        body: JSON.stringify({
           tickets,
           scenarioId: selectedScenario
         })
@@ -102,7 +105,7 @@ const TicketInput = ({ onAnalyze, onBack }) => {
       onAnalyze(result);
       
     } catch (err) {
-      setError('Failed to analyze tickets. Please check your connection and try again.');
+      setError('Failed to analyze tickets. Please check if the backend is running on http://localhost:3001');
       console.error(err);
     } finally {
       setLoading(false);
@@ -145,12 +148,21 @@ const TicketInput = ({ onAnalyze, onBack }) => {
     <div style={styles.container}>
       <div style={styles.content}>
         <div style={styles.header}>
-          <button style={styles.backButton} onClick={onBack}>
-            ← Back
-          </button>
+          <div style={styles.headerButtons}>
+            <button style={styles.backButton} onClick={onBack}>
+              ← Back
+            </button>
+            {onReset && (
+              <button style={styles.resetButton} onClick={onReset}>
+                🔄 Reset Demo
+              </button>
+            )}
+          </div>
           <h1 style={styles.title}>Enter Support Tickets</h1>
           <p style={styles.subtitle}>
-            Paste customer support messages below, or load demo data to see QueuePilot in action
+            {ticketText.trim()
+              ? `${parseTickets(ticketText).length} tickets ready to analyze`
+              : 'Load a demo scenario or paste your own support messages to begin'}
           </p>
         </div>
 
@@ -231,11 +243,15 @@ const TicketInput = ({ onAnalyze, onBack }) => {
           </button>
         </div>
 
-        <div style={styles.stats}>
-          <p style={styles.statsText}>
-            {ticketText.trim() ? `${parseTickets(ticketText).length} tickets ready to analyze` : 'No tickets entered yet'}
-          </p>
-        </div>
+        {!ticketText.trim() && !loading && (
+          <div style={styles.emptyState}>
+            <div style={styles.emptyStateIcon}>📋</div>
+            <h3 style={styles.emptyStateTitle}>No Tickets Yet</h3>
+            <p style={styles.emptyStateText}>
+              Choose a demo scenario above and click "Load Tickets", or paste your own support messages in the text area.
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -246,6 +262,46 @@ const styles = {
     minHeight: '100vh',
     background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
     padding: '40px 20px'
+  },
+  headerButtons: {
+    display: 'flex',
+    gap: '10px',
+    marginBottom: '20px'
+  },
+  resetButton: {
+    background: '#ef4444',
+    color: 'white',
+    border: 'none',
+    padding: '12px 24px',
+    fontSize: '14px',
+    fontWeight: '600',
+    borderRadius: '8px',
+    cursor: 'pointer',
+    transition: 'all 0.3s ease',
+    boxShadow: '0 4px 12px rgba(239, 68, 68, 0.3)'
+  },
+  emptyState: {
+    textAlign: 'center',
+    padding: '40px 20px',
+    background: 'rgba(255, 255, 255, 0.1)',
+    borderRadius: '12px',
+    marginTop: '20px'
+  },
+  emptyStateIcon: {
+    fontSize: '48px',
+    marginBottom: '16px'
+  },
+  emptyStateTitle: {
+    fontSize: '20px',
+    fontWeight: '700',
+    color: 'white',
+    margin: '0 0 12px 0'
+  },
+  emptyStateText: {
+    fontSize: '16px',
+    color: 'rgba(255, 255, 255, 0.9)',
+    lineHeight: '1.6',
+    margin: 0
   },
   content: {
     maxWidth: '900px',
